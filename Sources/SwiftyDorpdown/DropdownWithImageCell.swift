@@ -21,7 +21,7 @@ class DropdownWithImageCell: UITableViewCell {
             iconView.image = UIImage(named: item?.icon ?? "")
         }
     }
-    var configuration: DropdownConfig {
+    var configuration: DropdownConfiguration {
         didSet {
             updateUI()
         }
@@ -29,7 +29,7 @@ class DropdownWithImageCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
-        configuration = DropdownConfig()
+        configuration = DropdownConfiguration()
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none

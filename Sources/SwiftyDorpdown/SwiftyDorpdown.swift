@@ -27,13 +27,7 @@ open class SwiftyDorpdown: UIView {
     private let iconView        = UIImageView()
     private var tapped          : Bool = false
     
-    private var config          : DropdownConfig = {
-        var config = DropdownConfig()
-        config.borderColor = .red
-        config.borderWidth = 1
-        config.cornerRadius = 8
-        return config
-    }()
+    private var configuration   : DropdownConfiguration!
     
     public var isEnabled        : Bool? {
         didSet {
@@ -41,19 +35,20 @@ open class SwiftyDorpdown: UIView {
         }
     }
     
-    public init(title: String? = nil,placeholder: String? = nil,configuration: DropdownConfig? = nil,iconValue: String? = nil) {
+    public init(title: String? = nil,placeholder: String? = nil,configuration: DropdownConfiguration? = nil,iconValue: String? = nil) {
         
         super.init(frame: .zero)
         registerTapGesture()
         
         if let config = configuration {
-            self.config = config
+            self.configuration = config
         }
         
         if title != nil {
-            titleLabel.font = config.titleFont
+            titleLabel.font = self.configuration.titleFont
             titleLabel.text = title
-            titleLabel.textAlignment = config.isRTL ? .right : .left
+            titleLabel.textColor = self.configuration.titleColor
+            titleLabel.textAlignment = self.configuration.isRTL ? .right : .left
             addSubview(titleLabel)
             titleLabel.snp.makeConstraints { (make) in
                 make.width.equalToSuperview()
@@ -64,9 +59,9 @@ open class SwiftyDorpdown: UIView {
         
         container = UIView()
         container.isUserInteractionEnabled = true
-        container.layer.borderWidth = self.config.borderWidth
-        container.layer.cornerRadius = self.config.cornerRadius
-        container.layer.borderColor = self.config.borderColor.cgColor
+        container.layer.borderWidth = self.configuration.borderWidth
+        container.layer.cornerRadius = self.configuration.cornerRadius
+        container.layer.borderColor = self.configuration.borderColor.cgColor
         addSubview(container)
         container.snp.makeConstraints { [weak self] (make) in
             guard let self = self else { return }
@@ -83,13 +78,14 @@ open class SwiftyDorpdown: UIView {
         
         
         txtField = UITextField()
-        txtField.font = config.valueFont
-        txtField.textAlignment = config.isRTL ? .right : .left
+        txtField.font = self.configuration.valueFont
+        txtField.textAlignment = self.configuration.isRTL ? .right : .left
         txtField.isUserInteractionEnabled = false
         txtField.placeholder = placeholder
+        txtField.textColor = self.configuration.titleColor
         container.addSubview(txtField)
         txtField.snp.makeConstraints { (make) in
-            if config.isRTL {
+            if self.configuration.isRTL {
                 make.right.equalToSuperview().inset(16)
                 make.left.equalToSuperview().offset(40)
             } else {
@@ -101,16 +97,16 @@ open class SwiftyDorpdown: UIView {
         }
         let icon = UIImageView()
         if #available(iOS 13.0, *) {
-            icon.image =  UIImage(named: config.icon, in: .module, with: .none)
+            icon.image =  UIImage(named: self.configuration.icon, in: .module, with: .none)
         } else {
-            icon.image = UIImage(named: config.icon)
+            icon.image = UIImage(named: self.configuration.icon)
         }
         container.addSubview(icon)
         icon.snp.makeConstraints { (make) in
             make.width.equalTo(24)
             make.height.equalTo(24)
             make.centerY.equalToSuperview()
-            if config.isRTL {
+            if self.configuration.isRTL {
                 make.left.equalToSuperview().offset(16)
             } else {
                 make.right.equalToSuperview().inset(16)
@@ -118,10 +114,10 @@ open class SwiftyDorpdown: UIView {
         }
         
         loading.hidesWhenStopped = true
-        loading.style = config.loadingIndicatorStyle
+        loading.style = self.configuration.loadingIndicatorStyle
         container.addSubview(loading)
         loading.snp.makeConstraints { (make) in
-            if config.isRTL {
+            if self.configuration.isRTL {
                 make.right.equalToSuperview().inset(16)
             } else {
                 make.left.equalToSuperview().offset(16)
@@ -138,7 +134,7 @@ open class SwiftyDorpdown: UIView {
                 make.width.equalTo(36)
                 make.height.equalTo(25)
                 make.centerY.equalToSuperview()
-                if config.isRTL {
+                if self.configuration.isRTL {
                     make.right.equalToSuperview().inset(16)
                 } else {
                     make.left.equalToSuperview().offset(16)
@@ -147,7 +143,7 @@ open class SwiftyDorpdown: UIView {
             
             
             txtField.snp.remakeConstraints { (make) in
-                if config.isRTL {
+                if self.configuration.isRTL {
                     make.right.equalTo(iconView.snp.left).offset(-8)
                     make.left.equalToSuperview().offset(40)
                 } else {
@@ -214,7 +210,7 @@ extension SwiftyDorpdown {
     
     private func openPanModal() {
         
-        let page = DropdownItemsViewController(config: self.config, itemDidSelect: { [weak self] (item) in
+        let page = DropdownItemsViewController(configuration: self.configuration, itemDidSelect: { [weak self] (item) in
             guard let self = self else {
                 return
             }

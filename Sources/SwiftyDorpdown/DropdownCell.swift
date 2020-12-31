@@ -23,7 +23,7 @@ class DropdownCell: UITableViewCell {
             titleLabel.text = item?.title
         }
     }
-    var configuration: DropdownConfig {
+    var configuration: DropdownConfiguration {
         didSet {
             titleLabel.font = configuration.listItemsFont
             titleLabel.textAlignment = configuration.isRTL ? .right : .left
@@ -32,7 +32,7 @@ class DropdownCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
-        configuration = DropdownConfig()
+        configuration = DropdownConfiguration()
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none

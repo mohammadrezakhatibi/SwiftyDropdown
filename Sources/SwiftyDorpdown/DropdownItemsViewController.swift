@@ -11,7 +11,7 @@ import PanModal
 
 class DropdownItemsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate,PanModalPresentable {
     
-    public var config = DropdownConfig()
+    public var configuration = DropdownConfiguration()
     fileprivate var itemDidSelect   : (_ item: DropdownItem?) -> ()?
     fileprivate lazy var tableView   : UITableView = {
         let tableView = UITableView()
@@ -31,11 +31,11 @@ class DropdownItemsViewController: UIViewController, UITableViewDataSource, UITa
         }
     }
 
-    init(config: DropdownConfig, itemDidSelect: @escaping (_ value: DropdownItem?) -> ()) {
+    init(configuration: DropdownConfiguration, itemDidSelect: @escaping (_ value: DropdownItem?) -> ()) {
         
         self.itemDidSelect = itemDidSelect
         super.init(nibName: nil, bundle: nil)
-        self.config = config
+        self.configuration = configuration
     }
 
     required init?(coder: NSCoder) {
@@ -68,7 +68,7 @@ class DropdownItemsViewController: UIViewController, UITableViewDataSource, UITa
                 let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UITableViewCell.self), for: indexPath)
                 return cell
             }
-            cell.configuration = config
+            cell.configuration = configuration
             cell.item = dataSource?[indexPath.row]
             return cell
         }
@@ -76,7 +76,7 @@ class DropdownItemsViewController: UIViewController, UITableViewDataSource, UITa
             let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: UITableViewCell.self), for: indexPath)
             return cell
         }
-        cell.configuration = config
+        cell.configuration = configuration
         cell.item = dataSource?[indexPath.row]
         return cell
     }
